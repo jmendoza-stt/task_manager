@@ -1,0 +1,11 @@
+{
+  "name": "@stt/task-manager.cloud.core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [],
+  "scripts": {
+    "webiai:dev": "webiai infra dev",
+    "cloud.core": "npm run webiai:dev"
+  }
+}
