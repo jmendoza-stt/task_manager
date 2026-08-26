@@ -317,14 +317,14 @@ export class CloudCore extends Stack<CloudCoreEnv> {
     });
 
     // Route wiring — maps HTTP methods + paths to the Lambda
-    api.route('GET /tasks', { lambda: tasksFunction.nodes.function }, { auth: authorizer });
-    api.route('POST /tasks', { lambda: tasksFunction.nodes.function }, { auth: authorizer });
-    api.route('GET /tasks/{id}', { lambda: tasksFunction.nodes.function }, { auth: authorizer });
-    api.route('PUT /tasks/{id}', { lambda: tasksFunction.nodes.function }, { auth: authorizer });
-    api.route('DELETE /tasks/{id}', { lambda: tasksFunction.nodes.function }, { auth: authorizer });
+    api.route('GET /tasks', { lambda: tasksFunction.arn }, { auth: authorizer });
+    api.route('POST /tasks', { lambda: tasksFunction.arn }, { auth: authorizer });
+    api.route('GET /tasks/{id}', { lambda: tasksFunction.arn }, { auth: authorizer });
+    api.route('PUT /tasks/{id}', { lambda: tasksFunction.arn }, { auth: authorizer });
+    api.route('DELETE /tasks/{id}', { lambda: tasksFunction.arn }, { auth: authorizer });
 
     // Health check — public, no auth
-    api.route('GET /health', { lambda: tasksFunction.nodes.function });
+    api.route('GET /health', { lambda: tasksFunction.arn });
 
     return { api, tasksFunction };
   }
@@ -373,7 +373,7 @@ export class CloudCore extends Stack<CloudCoreEnv> {
       service: {
         ...EcsService.presets.spot({
           image: {
-            dockerfile: 'services/worker/Dockerfile',
+            dockerfile: 'Dockerfile',
             context: 'services/worker',
           },
           cpu: '0.25 vCPU',
