@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { AppShell } from "@/app/AppShell";
-import { WelcomePage } from "@/pages/WelcomePage";
+import TasksPage from "@/pages/tasks/TasksPage";
 import SignInPage from "@/pages/auth/sign-in/SignInPage";
 import SignUpPage from "@/pages/auth/sign-up/SignUpPage";
 import VerifyPage from "@/pages/auth/verify/VerifyPage";
@@ -97,7 +97,7 @@ export default observer(function App() {
           RUTAS CON SHELL (requieren autenticación)
           ════════════════════════════════════════════════════════════════════ */}
       <Route element={authStore.isAuthenticated ? <AppShell /> : <Navigate to="/signin" />}>
-        <Route path="/" element={<WelcomePage />} />
+        <Route path="/" element={<TasksPage />} />
       </Route>
 
       {/* ════════════════════════════════════════════════════════════════════
