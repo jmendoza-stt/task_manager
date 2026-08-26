@@ -346,9 +346,28 @@ async function deleteTask(event: ApiGatewayEvent): Promise<ApiResponse> {
  * GET /health — Health check endpoint (no auth required).
  */
 function healthCheck(): ApiResponse {
+  console.log('[tasks-api] Health check called');
   return response(200, {
     status: 'healthy',
     service: 'task-manager-api',
+    version: '1.1.0',
+    timestamp: new Date().toISOString(),
+    region: process.env.AWS_REGION ?? 'unknown',
+  });
+}
+
+/**
+ * GET /tasks/stats — Public stats endpoint (no auth required).
+ * Returns basic API stats for monitoring.
+ */
+function getStats(): ApiResponse {
+  console.log('[tasks-api] Stats endpoint called');
+  return response(200, {
+    service: 'task-manager-api',
+    version: '1.1.0',
+    table: TABLE_NAME,
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
     timestamp: new Date().toISOString(),
   });
 }
@@ -361,9 +380,13 @@ function healthCheck(): ApiResponse {
  */
 export async function main(event: ApiGatewayEvent): Promise<ApiResponse> {
   try {
+    console.log(`[tasks-api] Received: ${event.routeKey}`);
+
     switch (event.routeKey) {
       case 'GET /health':
         return healthCheck();
+      case 'GET /tasks/stats':
+        return getStats();
       case 'GET /tasks':
         return await listTasks(event);
       case 'POST /tasks':

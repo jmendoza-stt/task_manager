@@ -326,6 +326,9 @@ export class CloudCore extends Stack<CloudCoreEnv> {
     // Health check — public, no auth
     api.route('GET /health', { lambda: tasksFunction.arn });
 
+    // Stats — public, useful for monitoring dashboards
+    api.route('GET /tasks/stats', { lambda: tasksFunction.arn });
+
     return { api, tasksFunction };
   }
 
