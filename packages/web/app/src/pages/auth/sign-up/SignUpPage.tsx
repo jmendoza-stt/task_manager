@@ -144,6 +144,7 @@ const SignUpPage = observer(function SignUpPage() {
                     <Button
                       className="w-full"
                       size="sm"
+                      type="submit"
                       disabled={authStore.isLoading || !isChecked}
                     >
                       {authStore.isLoading ? "Creating account..." : "Sign Up"}

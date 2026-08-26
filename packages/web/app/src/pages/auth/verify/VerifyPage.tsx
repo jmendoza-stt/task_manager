@@ -61,6 +61,7 @@ const VerifyPage = observer(function VerifyPage() {
                     <Button
                       className="w-full"
                       size="sm"
+                      type="submit"
                       disabled={authStore.isLoading}
                     >
                       {authStore.isLoading ? "Verifying..." : "Verify Account"}

@@ -108,6 +108,7 @@ const SignInPage = observer(function SignInPage() {
                     <Button
                       className="w-full"
                       size="sm"
+                      type="submit"
                       disabled={authStore.isLoading}
                     >
                       {authStore.isLoading ? "Signing in..." : "Sign in"}
