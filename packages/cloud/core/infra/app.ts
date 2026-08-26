@@ -22,7 +22,7 @@ import { Stack } from '@webiai/sdk.infra/util/stack';
 import { DynamoTable } from '@webiai/sdk.infra/aws/dynamodb';
 import { LambdaFunction } from '@webiai/sdk.infra/aws/lambda';
 import { ApiGateway, EcsCluster, EcsService } from '@webiai/sdk.infra/aws/services';
-import { CognitoUserPool, CognitoUserPoolClient } from '@webiai/sdk.infra/aws/cognito';
+import { CognitoUserPool, CognitoUserPoolClient, type CognitoUserPoolArgs } from '@webiai/sdk.infra/aws/cognito';
 import { createVpc } from './factories/vpc.js';
 import { cloudCoreEnvVisitor, type CloudCoreEnv } from './env.js';
 
@@ -57,8 +57,6 @@ export class CloudCore extends Stack<CloudCoreEnv> {
   async run(): Promise<void> {
     await super.run();
 
-    const ctx = this.runtimeContext;
-
     // ──────────────────────────────────────────────────────────────────
     // Phase 1: Network (VPC)
     // ──────────────────────────────────────────────────────────────────
@@ -77,7 +75,7 @@ export class CloudCore extends Stack<CloudCoreEnv> {
     // ──────────────────────────────────────────────────────────────────
     // Phase 4: API (API Gateway + Lambda + Routes)
     // ──────────────────────────────────────────────────────────────────
-    const { api, tasksFunction } = this.initApi(tasksTable, userPool, userPoolClient);
+    const { api } = this.initApi(tasksTable, userPool, userPoolClient);
 
     // ──────────────────────────────────────────────────────────────────
     // Phase 5: Compute (ECS/Fargate)
@@ -91,13 +89,15 @@ export class CloudCore extends Stack<CloudCoreEnv> {
     // 1. Serializes the resource's key data (ARN, ID, name)
     // 2. Writes it to SSM at /stacks/{app}/CloudCore/{stage}/resources/{name}
     // 3. Other stacks can restore() it to get the data without re-creating
+    //
+    // `this` is a RuntimeContextProvider (Stack has a `runtimeContext` getter)
     // ──────────────────────────────────────────────────────────────────
-    vpc.register(ctx);
-    tasksTable.register(ctx);
-    api.register(ctx);
-    userPool.register(ctx);
-    userPoolClient.register(ctx);
-    cluster.register(ctx);
+    vpc.register(this);
+    tasksTable.register(this);
+    api.register(this);
+    userPool.register(this);
+    userPoolClient.register(this);
+    cluster.register(this);
   }
 
   // ════════════════════════════════════════════════════════════════════
@@ -217,7 +217,7 @@ export class CloudCore extends Stack<CloudCoreEnv> {
           required: true,
         },
       ],
-    }, {
+    } as CognitoUserPoolArgs, {
       shared: {
         urnNamespace: ['stt', 'CloudCore'],
         resourceName: 'Auth.UserPool',
