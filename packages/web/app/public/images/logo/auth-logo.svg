@@ -1,5 +1,5 @@
 <svg width="231" height="48" viewBox="0 0 231 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="48" height="48" rx="8" fill="#4F46E5"/>
+  <rect width="48" height="48" rx="8" fill="oklch(76.9% 0.188 70.08)"/>
   <path d="M24 14L34 20V32L24 38L14 32V20L24 14Z" fill="white" fill-opacity="0.9"/>
   <text x="58" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="600" fill="white">Task Manager</text>
 </svg>

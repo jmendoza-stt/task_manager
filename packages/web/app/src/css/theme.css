@@ -34,18 +34,18 @@
   --color-white: #ffffff;
   --color-black: #101828;
 
-  --color-brand-25: #f2f7ff;
-  --color-brand-50: #ecf3ff;
-  --color-brand-100: #dde9ff;
-  --color-brand-200: #c2d6ff;
-  --color-brand-300: #9cb9ff;
-  --color-brand-400: #7592ff;
-  --color-brand-500: #465fff;
-  --color-brand-600: #3641f5;
-  --color-brand-700: #2a31d8;
-  --color-brand-800: #252dae;
-  --color-brand-900: #262e89;
-  --color-brand-950: #161950;
+  --color-brand-25: oklch(98.7% 0.022 95.277);
+  --color-brand-50: oklch(98.7% 0.022 95.277);
+  --color-brand-100: oklch(96.2% 0.059 95.617);
+  --color-brand-200: oklch(92.4% 0.12 95.746);
+  --color-brand-300: oklch(87.9% 0.169 91.605);
+  --color-brand-400: oklch(82.8% 0.189 84.429);
+  --color-brand-500: oklch(76.9% 0.188 70.08);
+  --color-brand-600: oklch(66.6% 0.179 58.318);
+  --color-brand-700: oklch(55.5% 0.163 48.998);
+  --color-brand-800: oklch(47.3% 0.137 46.201);
+  --color-brand-900: oklch(41.4% 0.112 45.904);
+  --color-brand-950: oklch(27.9% 0.077 45.635);
 
   --color-blue-light-25: #f5fbff;
   --color-blue-light-50: #f0f9ff;
