@@ -8,7 +8,8 @@
   },
   "workspaces": [
     "packages/cloud/core",
-    "packages/web/app"
+    "packages/web/app",
+    "packages/cloud/consumer"
   ],
   "devDependencies": {
     "@webiai/devlink": "^2.8.1",

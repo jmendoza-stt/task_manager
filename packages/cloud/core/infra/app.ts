@@ -24,6 +24,7 @@ import { LambdaFunction } from '@webiai/sdk.infra/aws/lambda';
 import { ApiGateway, EcsCluster, EcsService } from '@webiai/sdk.infra/aws/services';
 import { CognitoUserPool, CognitoUserPoolClient, type CognitoUserPoolArgs } from '@webiai/sdk.infra/aws/cognito';
 import { createVpc } from './factories/vpc.js';
+import { TaskManagerConfig } from '@res';
 import { cloudCoreEnvVisitor, type CloudCoreEnv } from './env.js';
 
 /**
@@ -83,7 +84,12 @@ export class CloudCore extends Stack<CloudCoreEnv> {
     const { cluster } = this.initEcs(vpc, tasksTable);
 
     // ──────────────────────────────────────────────────────────────────
-    // Phase 6: Register shared resources (write to SSM Parameter Store)
+    // Phase 6: Shared Data (DataExport)
+    // ──────────────────────────────────────────────────────────────────
+    const config = this.initConfigExport(api, tasksTable);
+
+    // ──────────────────────────────────────────────────────────────────
+    // Phase 7: Register shared resources (write to SSM Parameter Store)
     //
     // This is the "cross-stack sharing" pattern. Each register() call:
     // 1. Serializes the resource's key data (ARN, ID, name)
@@ -98,6 +104,7 @@ export class CloudCore extends Stack<CloudCoreEnv> {
     userPool.register(this);
     userPoolClient.register(this);
     cluster.register(this);
+    config.register(this);
   }
 
   // ════════════════════════════════════════════════════════════════════
@@ -394,6 +401,40 @@ export class CloudCore extends Stack<CloudCoreEnv> {
     });
 
     return { cluster, workerService };
+  }
+
+  /**
+   * Phase 6: Config DataExport (SharedDataResource)
+   *
+   * Creates a DataExport holding plain config values — no AWS infrastructure.
+   * This is our own SharedDataResource. Consumer stacks restore it to learn
+   * the API URL, table name, etc. without hardcoding them.
+   *
+   * ## DataExport vs registering an AWS resource:
+   *
+   * - `vpc.register()` → shares a real VPC (its ID, subnets, security groups)
+   * - `config.register()` → shares plain *data* (URLs, names, flags)
+   *
+   * Both write to SSM and both can be restored, but DataExport creates no
+   * cloud resource — it's purely a typed data envelope.
+   *
+   * Note: `api.url` and `tasksTable.name` are Pulumi Outputs (resolved at
+   * deploy time). DataExport accepts Inputs, so we can pass them directly.
+   */
+  private initConfigExport(api: ApiGateway, tasksTable: DynamoTable) {
+    return new TaskManagerConfig('TaskManagerConfig', {
+      appName: 'task-manager',
+      stage: this.env.schema.local ? 'dev' : this.runtimeContext.stage,
+      apiUrl: api.url,
+      tasksTableName: tasksTable.name,
+      region: this.env.schema.aws.region,
+    }, {
+      shared: {
+        urnNamespace: ['stt', 'CloudCore'],
+        resourceName: 'Config.TaskManager',
+        stack: 'CloudCore',
+      },
+    });
   }
 }
 

@@ -18,6 +18,12 @@
       ],
       "@webiai/sdk.infra/*": [
         "./.sst/webiai/dist/*"
+      ],
+      "@shared/*": [
+        "./shared/*"
+      ],
+      "@shared": [
+        "./shared/index"
       ]
     }
   },

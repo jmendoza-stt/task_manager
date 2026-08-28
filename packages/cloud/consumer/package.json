@@ -1,0 +1,13 @@
+{
+  "name": "@stt/task-manager.cloud.consumer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [],
+  "scripts": {
+    "cloud.consumer": "npm run webiai:dev"
+  },
+  "dependencies": {
+    "@stt/task-manager.cloud.core": "file:../core"
+  }
+}

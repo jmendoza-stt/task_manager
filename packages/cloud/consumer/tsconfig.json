@@ -1,12 +1,10 @@
 {
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "outDir": "./dist",
-    "declaration": true,
-    "declarationMap": true,
     "skipLibCheck": true,
     "paths": {
       "@res": [
@@ -21,19 +19,30 @@
       "@webiai/sdk.infra/*": [
         "./.sst/webiai/dist/*"
       ],
-      "@shared": [
-        "./shared/index"
+      "@dep:cloud.core": [
+        "../core/shared/index"
       ],
-      "@shared/*": [
-        "./shared/*"
+      "@dep:cloud.core/*": [
+        "../core/shared/*"
+      ],
+      "@res:cloud.core": [
+        "../core/resources/index"
+      ],
+      "@res:cloud.core/*": [
+        "../core/resources/*"
       ]
     }
   },
   "include": [
-    "resources/**/*"
+    "infra/**/*",
+    "shared/**/*",
+    "resources/**/*",
+    "sst.config.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    ".sst",
+    "modules"
   ]
 }

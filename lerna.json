@@ -2,6 +2,8 @@
   "version": "0.1.0",
   "packages": [
     "packages/cloud/core",
-    "packages/cloud/core/modules/*"
+    "packages/cloud/core/modules/*",
+    "packages/cloud/consumer",
+    "packages/cloud/consumer/modules/*"
   ]
 }

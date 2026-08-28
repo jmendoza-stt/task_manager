@@ -8,4 +8,3 @@
  * Imported by consumers via @res:<artifact-name> alias.
  */
 export { ResourceName } from './resource-name.js';
-export { TaskManagerConfig, type TaskManagerConfigData } from './task-manager-config.js';

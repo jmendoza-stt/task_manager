@@ -9,28 +9,16 @@
     "declarationMap": true,
     "skipLibCheck": true,
     "paths": {
-      "@res": [
-        "./resources/index"
-      ],
-      "@res/*": [
-        "./resources/*"
-      ],
       "@sst/platform/*": [
         "./.sst/platform/src/*"
       ],
       "@webiai/sdk.infra/*": [
         "./.sst/webiai/dist/*"
-      ],
-      "@shared": [
-        "./shared/index"
-      ],
-      "@shared/*": [
-        "./shared/*"
       ]
     }
   },
   "include": [
-    "resources/**/*"
+    "shared/**/*"
   ],
   "exclude": [
     "node_modules",

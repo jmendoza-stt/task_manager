@@ -21,11 +21,17 @@
       "@webiai/sdk.infra/*": [
         "./.sst/webiai/dist/*"
       ],
-      "@shared": [
-        "./shared/index"
+      "@dep:cloud.core": [
+        "../core/shared/index"
       ],
-      "@shared/*": [
-        "./shared/*"
+      "@dep:cloud.core/*": [
+        "../core/shared/*"
+      ],
+      "@res:cloud.core": [
+        "../core/resources/index"
+      ],
+      "@res:cloud.core/*": [
+        "../core/resources/*"
       ]
     }
   },

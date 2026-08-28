@@ -33,4 +33,7 @@ export enum ResourceName {
 
   /** ECS Cluster — compute cluster for Fargate services */
   Cluster_Main = 'Cluster.Main',
+
+  /** Config DataExport — shared config values (URLs, names) for consumer stacks */
+  Config_TaskManager = 'Config.TaskManager',
 }
