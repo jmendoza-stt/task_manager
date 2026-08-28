@@ -5,7 +5,8 @@ import type { Task } from "@/lib/api";
 import { cn } from "@/utils";
 
 interface Props {
-  onEdit: (task: Task) => void;
+  onCardClick: (task: Task) => void;
+  onDetails: (task: Task) => void;
   onCreateInColumn: (status: Task["status"]) => void;
 }
 
@@ -15,7 +16,7 @@ const COLUMNS: { key: Task["status"]; label: string; color: string }[] = [
   { key: "completed", label: "Completed", color: "border-t-success-500" },
 ];
 
-const TaskKanbanView = observer(function TaskKanbanView({ onEdit, onCreateInColumn }: Props) {
+const TaskKanbanView = observer(function TaskKanbanView({ onCardClick, onDetails, onCreateInColumn }: Props) {
   const { tasksByStatus, loading } = tasksStore;
 
   if (loading) {
@@ -89,12 +90,26 @@ const TaskKanbanView = observer(function TaskKanbanView({ onEdit, onCreateInColu
                   key={task.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, task.id)}
-                  onClick={() => onEdit(task)}
-                  className="cursor-pointer rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+                  onClick={() => onCardClick(task)}
+                  className="group cursor-pointer rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                    {task.title}
-                  </p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                      {task.title}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDetails(task);
+                      }}
+                      className="shrink-0 rounded p-0.5 text-gray-400 opacity-0 transition hover:bg-gray-100 hover:text-gray-600 group-hover:opacity-100 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                      title="View details"
+                    >
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                      </svg>
+                    </button>
+                  </div>
                   {task.description && (
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
                       {task.description}

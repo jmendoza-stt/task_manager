@@ -5,6 +5,7 @@ import { Button } from "@/elements/ui/button";
 import TaskListView from "./TaskListView";
 import TaskKanbanView from "./TaskKanbanView";
 import CreateTaskModal from "./CreateTaskModal";
+import TaskDetailModal from "./TaskDetailModal";
 import type { Task } from "@/lib/api";
 
 type ViewMode = "kanban" | "list";
@@ -13,17 +14,23 @@ const TasksPage = observer(function TasksPage() {
   const [view, setView] = useState<ViewMode>("kanban");
   const [showCreate, setShowCreate] = useState(false);
   const [createDefaultStatus, setCreateDefaultStatus] = useState<Task["status"]>("pending");
+  const [detailTask, setDetailTask] = useState<Task | null>(null);
 
   useEffect(() => {
     tasksStore.fetchTasks();
   }, []);
 
-  const handleEdit = (task: Task) => {
-    // For now, simple inline status cycling. A full edit modal can be added later.
+  // Cycle a task's status to the next one (pending -> in_progress -> completed -> pending).
+  const cycleStatus = (task: Task) => {
     const statusOrder: Task["status"][] = ["pending", "in_progress", "completed"];
     const currentIdx = statusOrder.indexOf(task.status);
     const nextStatus = statusOrder[(currentIdx + 1) % statusOrder.length];
     tasksStore.moveTask(task.id, nextStatus);
+  };
+
+  // Open the detail modal (used by list row click and kanban details button).
+  const openDetails = (task: Task) => {
+    setDetailTask(task);
   };
 
   const handleCreateInColumn = (status: Task["status"]) => {
@@ -98,9 +105,13 @@ const TasksPage = observer(function TasksPage() {
 
       {/* View */}
       {view === "kanban" ? (
-        <TaskKanbanView onEdit={handleEdit} onCreateInColumn={handleCreateInColumn} />
+        <TaskKanbanView
+          onCardClick={cycleStatus}
+          onDetails={openDetails}
+          onCreateInColumn={handleCreateInColumn}
+        />
       ) : (
-        <TaskListView onEdit={handleEdit} />
+        <TaskListView onEdit={cycleStatus} onRowClick={openDetails} />
       )}
 
       {/* Create modal */}
@@ -109,6 +120,9 @@ const TasksPage = observer(function TasksPage() {
         onClose={() => setShowCreate(false)}
         defaultStatus={createDefaultStatus}
       />
+
+      {/* Detail modal */}
+      <TaskDetailModal task={detailTask} onClose={() => setDetailTask(null)} />
     </div>
   );
 });

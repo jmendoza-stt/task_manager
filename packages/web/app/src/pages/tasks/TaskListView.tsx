@@ -5,9 +5,10 @@ import type { Task } from "@/lib/api";
 
 interface Props {
   onEdit: (task: Task) => void;
+  onRowClick: (task: Task) => void;
 }
 
-const TaskListView = observer(function TaskListView({ onEdit }: Props) {
+const TaskListView = observer(function TaskListView({ onEdit, onRowClick }: Props) {
   const { tasks, loading } = tasksStore;
 
   if (loading) {
@@ -55,7 +56,8 @@ const TaskListView = observer(function TaskListView({ onEdit }: Props) {
           {tasks.map((task) => (
             <tr
               key={task.id}
-              className="border-b border-gray-100 last:border-0 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-white/[0.02]"
+              onClick={() => onRowClick(task)}
+              className="cursor-pointer border-b border-gray-100 last:border-0 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-white/[0.02]"
             >
               <td className="px-5 py-4">
                 <div>
@@ -81,16 +83,22 @@ const TaskListView = observer(function TaskListView({ onEdit }: Props) {
               <td className="px-5 py-4">
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => onEdit(task)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit(task);
+                    }}
                     className="text-gray-500 hover:text-brand-500 dark:text-gray-400 dark:hover:text-brand-400"
-                    title="Edit"
+                    title="Advance status"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
                   <button
-                    onClick={() => tasksStore.removeTask(task.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      tasksStore.removeTask(task.id);
+                    }}
                     className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-400"
                     title="Delete"
                   >
