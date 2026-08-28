@@ -6,10 +6,6 @@
 
 declare module "sst" {
   export interface Resource {
-    "Worker": {
-      "service": string
-      "type": "sst.aws.Service"
-    }
   }
 }
 
