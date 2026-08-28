@@ -6,6 +6,7 @@ import TaskListView from "./TaskListView";
 import TaskKanbanView from "./TaskKanbanView";
 import CreateTaskModal from "./CreateTaskModal";
 import TaskDetailModal from "./TaskDetailModal";
+import TaskEditModal from "./TaskEditModal";
 import type { Task } from "@/lib/api";
 
 type ViewMode = "kanban" | "list";
@@ -15,22 +16,27 @@ const TasksPage = observer(function TasksPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [createDefaultStatus, setCreateDefaultStatus] = useState<Task["status"]>("pending");
   const [detailTask, setDetailTask] = useState<Task | null>(null);
+  const [editTask, setEditTask] = useState<Task | null>(null);
 
   useEffect(() => {
     tasksStore.fetchTasks();
   }, []);
 
-  // Cycle a task's status to the next one (pending -> in_progress -> completed -> pending).
-  const cycleStatus = (task: Task) => {
-    const statusOrder: Task["status"][] = ["pending", "in_progress", "completed"];
-    const currentIdx = statusOrder.indexOf(task.status);
-    const nextStatus = statusOrder[(currentIdx + 1) % statusOrder.length];
-    tasksStore.moveTask(task.id, nextStatus);
-  };
-
-  // Open the detail modal (used by list row click and kanban details button).
+  // Open the read-only detail modal.
   const openDetails = (task: Task) => {
     setDetailTask(task);
+  };
+
+  // Open the editable modal (also closes the detail modal if open).
+  const openEdit = (task: Task) => {
+    setDetailTask(null);
+    setEditTask(task);
+  };
+
+  // Delete a task (used by list actions, kanban dropdown, and detail modal).
+  const handleDelete = (task: Task) => {
+    setDetailTask(null);
+    tasksStore.removeTask(task.id);
   };
 
   const handleCreateInColumn = (status: Task["status"]) => {
@@ -106,12 +112,13 @@ const TasksPage = observer(function TasksPage() {
       {/* View */}
       {view === "kanban" ? (
         <TaskKanbanView
-          onCardClick={cycleStatus}
-          onDetails={openDetails}
+          onCardClick={openDetails}
+          onEdit={openEdit}
+          onDelete={handleDelete}
           onCreateInColumn={handleCreateInColumn}
         />
       ) : (
-        <TaskListView onEdit={cycleStatus} onRowClick={openDetails} />
+        <TaskListView onEdit={openEdit} onRowClick={openDetails} />
       )}
 
       {/* Create modal */}
@@ -121,8 +128,16 @@ const TasksPage = observer(function TasksPage() {
         defaultStatus={createDefaultStatus}
       />
 
-      {/* Detail modal */}
-      <TaskDetailModal task={detailTask} onClose={() => setDetailTask(null)} />
+      {/* Detail modal (read-only) */}
+      <TaskDetailModal
+        task={detailTask}
+        onClose={() => setDetailTask(null)}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+      />
+
+      {/* Edit modal */}
+      <TaskEditModal task={editTask} onClose={() => setEditTask(null)} />
     </div>
   );
 });
